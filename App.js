@@ -1,114 +1,164 @@
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Animated, TouchableOpacity ,Image} from 'react-native'
+import { View, Text, StyleSheet, Image, Touchable, TouchableOpacity, SafeAreaView, An, Animated } from 'react-native'
 import React, { useRef, useState } from 'react'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-
-const Circle = ({ onPress, animatedValue ,Value}) => {
-const inputRange=[0,0.001,0.5,0.501,1];
-const move=()=>Animated.timing(Value,{
-  toValue:{x:100,y:100,height:100},
-  duration:1000,
-  useNativeDriver:false
-}).start()
-  return (
-    <Animated.View style={{ flex: 1, paddingBottom: 40, padding: 8, alignItems: "center",backgroundColor:animatedValue.interpolate({
-      inputRange,
-      outputRange:['gold','gold','gold','#444','#444']
-    }) }}>
-        <Animated.View  style={Value.getLayout()}>
-        <TouchableWithoutFeedback
-        onPress={move}
-        >
-        <Animated.Image 
-        style={{width:100,height:100,borderRadius:100}}
-        source={{uri:"https://scontent-mct1-1.xx.fbcdn.net/v/t1.6435-9/87094355_651599595631239_4089146733689307136_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=174925&_nc_eui2=AeGURv6d2WgFgVD301BVGqKkGNo4BdPLZzYY2jgF08tnNuD7Si_rdGrNdaLWyUA_SgqoOWWyYsKwMf0J_YvVX4UI&_nc_ohc=lvj1bnf6ILMAX9pPBQK&_nc_ht=scontent-mct1-1.xx&oh=00_AT8kkQ4gzA2IeMEsR8Y_aka4yNexCyrZMtWW8aYe7fhY_w&oe=6372DA47"}} />
-        </TouchableWithoutFeedback>
-        </Animated.View>
-      <Animated.View style={[style.Circle, {
-        backgroundColor:animatedValue.interpolate({
-          inputRange,
-          outputRange:['#444','#444','gold','gold','gold']
-        }), 
-        transform: [{
-          perspective: 400
-        },
-        {
-          rotateY: animatedValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: ['0deg', '-90deg', '-180deg']
-          })
-        },
-        {
-          scale: animatedValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [1, 8, 1]
-          })
-        },{
-          translateX:animatedValue.interpolate({
-            inputRange:[0,0.5,1],
-            outputRange: [1, 12, 1]
-          })
-        }
-        ]
-      }]}>
-        <TouchableOpacity
-          onPress={onPress}
-        >
-          <AntDesign name='arrowright' size={28} color={"#fff"} />
-        </TouchableOpacity>
-      </Animated.View>
-    </Animated.View>
-  )
-}
+import profile from './Assets/profile.png'
+import Search from './Assets/search.png'
+import Settings from './Assets/settings.png'
+import Home from './Assets/home.png'
+import Notification from './Assets/bell.png'
+import Logout from './Assets/logout.png'
+import Menu from './Assets/menu.png'
+import photo from './Assets/photo.jpg'
+import close from './Assets/close.png'
 const App = () => {
-  const animatedValue = useRef(new Animated.Value(0)).current
-  const [index,setindex]=React.useState(0)
-  const Value=useState(new Animated.ValueXY({
-    x:0,
-    y:0,
-    
-  }))[0]
-  const move=(toValue)=>Animated.timing(Value,{
-    toValue,
-    duration:1000,
-    useNativeDriver:false
-  })
-  const animation=(toValue)=>
-  Animated.timing(animatedValue, {
-      toValue,
-      duration: 3000,
-      useNativeDriver: false
-    })
-  
-  const onPress = () => {
-    // console.log(animatedValue)
-    // console.log("jdc");
-    setindex(index===1?0:1)
-    animation(index===0?1:0).start()
-    move(index==0?{x:0,y:100,left:40}:{x:0,y:0}).start()
-    // console.log(animatedValue);
-  }
+  const [currentTab, setCurrentTab] = useState("Home")
+  const [showMenu,setShowMenu]=useState(false);
+  const offsetValue=useRef(new Animated.Value(0)).current
+  const scaleValue=useRef(new Animated.Value(1)).current
+  const closeButtonOffset=useRef(new Animated.Value(0)).current
   return (
-    <View style={style.container}>
-      <Circle onPress={onPress} animatedValue={animatedValue} Value={Value}/>
-    </View>
+    <SafeAreaView style={style.container}>
+      <View style={{ justifyContent: "flex-start",padding:15}}>
+      
+      <Image
+          style={{ width: 60, height: 60, borderRadius: 10, }}
+          source={profile}
+        />
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "white",
+            marginTop: 20
+          }}
+        >Muhammad Sheraz</Text>
+        <TouchableOpacity>
+          <Text style={{
+            marginTop: 6,
+            color: "white"
+          }}>View Profile</Text>
+        </TouchableOpacity>
+        <View  style={{flexGrow:1,marginTop:50}}>
+       {TabBtn(currentTab,setCurrentTab,"Home",Home,scaleValue,offsetValue,closeButtonOffset,setShowMenu,showMenu)}
+       {TabBtn(currentTab,setCurrentTab,"Search",Search,scaleValue,offsetValue,closeButtonOffset,setShowMenu,showMenu)}
+       {TabBtn(currentTab,setCurrentTab,"Notification",Notification,scaleValue,offsetValue,closeButtonOffset,setShowMenu,showMenu)}
+       {TabBtn(currentTab,setCurrentTab,"Settings",Settings,scaleValue,offsetValue,closeButtonOffset,setShowMenu,showMenu)}
+        </View>
+        <View>
+        {TabBtn(currentTab,setCurrentTab,"Logout",Logout)}
+
+        </View>
+      </View>
+     
+      <Animated.View style={{ flexGrow: 1, backgroundColor: "#fff", position: "absolute", top: 0, bottom: 0, left: 0, right: 0, paddingHorizontal: 10,borderRadius:showMenu?15:0, paddingVertical: 20,
+    transform:[
+      {scale:scaleValue},
+      {translateX:offsetValue}
+    ]
+    }}>
+      <Animated.View  style={{transform:[
+        {translateY:closeButtonOffset}
+      ]}}>
+
+        <TouchableOpacity
+        onPress={()=>{
+          Animated.timing(scaleValue,{
+            toValue:showMenu?1:0.88,
+            duration:300,
+            useNativeDriver:false
+          }).start()
+          Animated.timing(offsetValue,{
+            toValue:showMenu?1:230,
+            duration:300,
+            useNativeDriver:false
+          }).start()
+          Animated.timing(closeButtonOffset,{
+            toValue:showMenu?5:0,
+            duration:300,
+            useNativeDriver:false
+          }).start()
+          setShowMenu(!showMenu)
+        }}
+        >
+          <Image
+            style={{ width: 20, height: 20, tintColor: "black",  }}
+            source={showMenu? close:Menu}
+          />
+        </TouchableOpacity>
+        <Text  style={{fontSize:30,fontWeight:"bold",color:"black",paddingTop:20}}>{currentTab}</Text>
+           <Image  
+           source={{uri:'https://scontent.flhe13-1.fna.fbcdn.net/v/t1.6435-9/106128993_736062463851618_1920375277792560599_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=84a396&_nc_eui2=AeELxIah-UvTk3eMA3Oc1hP5ke11cuZ0cB-R7XVy5nRwH2QCqm4ZEaqEQNj2xOvgQsquloZ62FkDul-yawFdPdur&_nc_ohc=BWikChEik54AX9xC1WL&_nc_ht=scontent.flhe13-1.fna&oh=00_AT9H6BQf23moQ9sxIiXM2EGObrISGezXYyOKgUpPDM44rQ&oe=63780A72'}}
+           style={{width:"100%",height:300,borderRadius:15,marginTop:20}}
+           />
+           <Text  style={{fontSize:18,fontWeight:"bold",paddingTop:15,paddingBottom:8}}>Muhammad Sheraz</Text>
+
+           <Text style={{}}>My name is sheraz and my github id is muhammadshiraz492 you can search on google </Text>
+           </Animated.View>
+     
+      </Animated.View>
+   
+    </SafeAreaView>
   )
 }
 
-export default App;
+const TabBtn = (currentTab, setCurrentTab, title, image,scaleValue,offsetValue,closeButtonOffset,setShowMenu,showMenu) => {
+  return (
+    <TouchableOpacity onPress={() => {
+      if (title == "Logout") {
+    alert("This  is logout Btn")
+      } else {
+        setCurrentTab(title)
+        Animated.timing(scaleValue,{
+          toValue:showMenu?1:0.88,
+          duration:300,
+          useNativeDriver:false
+        }).start()
+        Animated.timing(offsetValue,{
+          toValue:showMenu?1:230,
+          duration:300,
+          useNativeDriver:false
+        }).start()
+        Animated.timing(closeButtonOffset,{
+          toValue:showMenu?5:0,
+          duration:300,
+          useNativeDriver:false
+        }).start()
+        setShowMenu(!showMenu)
+      }
+    }}
+    >
+      <View style={{
+        flexDirection: "row", alignItems: "center",
+        backgroundColor: currentTab == title ? "#fff" : "transparent",
+        paddingVertical: 8,
+        paddingLeft: 13,
+        paddingRight: 35,
+        borderRadius: 8,
+        marginTop: 15
+      }}>
+        <Image
+          style={{
+            width: 25, height: 25,
+            tintColor: currentTab == title ? "#5359D1" : "#fff"
+          }}
+          source={image}
+
+        />
+        <Text style={{
+          fontSize: 15, fontWeight: "bold", paddingLeft: 15,
+          color: currentTab == title ? "#5359D1" : "#fff"
+        }}>{title}</Text>
+      </View>
+
+    </TouchableOpacity>
+  )
+}
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor:"gold"
-  },
-  Circle: {
-    position:"absolute",
-    bottom:0,
-    backgroundColor: "#444",
-    height: 70,
-    width: 70,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: "center",
-    marginBottom:30
+    backgroundColor: "#5359D1",
+    alignItems: "flex-start",
+    justifyContent: "flex-start"
   }
 })
+
+export default App

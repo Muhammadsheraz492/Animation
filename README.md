@@ -1,4 +1,4 @@
-# FHEORY
+# Animation
 I took the design from Sketch UI just to show my design skills.
 you can check the design by clicking the below link.
 I want you to see my coding so that you can judge for yourself that my coding is somewhat smooth and that my code can be understood well.
